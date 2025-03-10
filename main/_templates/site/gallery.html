@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static range_filter %}
+{% block title %}{{ seo_title }}{% endblock title %}
+{% block description %}{{ seo_description }}{% endblock description %}
+{% block propertytitle %}{% if seo_previev %}{{ seo_previev.url }} {% endif %} {% endblock propertytitle %}
+{% block propertydescription %}{{ seo_propertytitle }}{% endblock propertydescription %}
+{% block propertyimage %}{{ seo_propertydescription }}{% endblock propertyimage %}
+{% block head %}
+<!-- Additional head content specific to this page -->
+{% for page in homepages %}
+<div class="breadcrumbs">
+    <div class="page-header d-flex align-items-center">
+        <div class="container position-relative">
+            <div class="row d-flex justify-content-center">
+
+                <div class="section-header">
+                    <h2>{{ page.gallery_main_title }}</h2>
+                    <p>{{ page.gallery_main_description }}</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <nav>
+        <div class="container">
+            <ol>
+                <li><a href="{% url 'webmain:home' %}">Главная</a></li>
+                <li>{{ page.gallery_main_title }}</li>
+            </ol>
+        </div>
+    </nav>
+</div>
+{% endfor %}
+{% endblock head %}
+
+{% block content %}
+  <main id="main">
+
+    <div class="single-page">
+      <!-- Portfolio Section -->
+    {% for gallery in galleries %}
+    <section id="portfolio" class="portfolio">
+        <div class="container" data-aos="fade-up">
+            <div class="section-header">
+
+                    <h2>{{ seo_title }}</h2>
+                    <p>{{ seo_description }}</p>
+
+            </div>
+            <div class="portfolio-isotope" data-portfolio-filter="*" data-portfolio-layout="masonry"
+                 data-portfolio-sort="original-order" data-aos="fade-up" data-aos-delay="100">
+                <div class="row gy-4 portfolio-container">
+                    {% for item in gallery.items.all %}
+                    <div class="col-xl-4 col-md-6 portfolio-item">
+                        <div class="portfolio-wrap">
+                            <a href="{{ item.photo.url }}" data-gallery="portfolio-gallery-app" class="glightbox">
+                                <img src="{{ item.photo.url }}" class="img-fluid" alt="">
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endfor %}
+    <!-- End Portfolio Section -->
+    </div>
+
+  </main><!-- End #main -->
+{% endblock content %}

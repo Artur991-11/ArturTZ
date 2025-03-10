@@ -1,0 +1,642 @@
+
+<!DOCTYPE html>
+{% load static range_filter %}
+<html lang="zxx">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title> {% get_settings_first as settings %}{{settings.name}} - {{ seo_title }}</title>
+    <meta content="{{ seo_description }}" name="description">
+    <meta property="og:title" content="{% if seo_previev %}{{ seo_previev.url }} {% endif %}">
+    <meta property="og:description" content="{{ seo_propertytitle }}">
+    <meta property="og:image" content="{{ seo_propertydescription }}">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="{% if settings.favicon %}{{settings.favicon.url}}{% endif %}" />
+    <!-- Analitic link -->
+
+    {{settings.yandex_metrica}}
+    {{settings.google_analitic}}
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600;1,700&amp;family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&amp;family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&amp;display=swap"
+          rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&amp;display=swap" rel="stylesheet">
+    <!-- Vendor CSS Files -->
+    <link href="{% static 'site/stylesheets/font-awesome.min.css' %}" rel="stylesheet">
+    <link href="{% static 'site/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+    <link href="{% static 'site/vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
+    <link href="{% static 'site/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'site/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+    <!-- Main CSS File -->
+    <link href="{% static 'site/stylesheets/styles.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+
+        .modal-backdrop {
+            z-index: 1040;
+        }
+
+        .modal {
+            z-index: 1050;
+        }
+    </style>
+
+
+
+</head>
+
+<body>
+
+<header id="header" class="header d-flex align-items-center sticked stikcy-menu" style="background: black;" >
+    <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
+        <a href="home.html" class="logo d-flex align-items-center">
+            {% if settings.logo %}
+            <img src="{{ settings.logo.url }}" alt="logo">
+            {% endif %}
+        </a>
+        <nav id="navbar" class="navbar">
+            <ul>
+                <li><a href="{% url 'webmain:home' %}">Главная</a></li>
+                <li><a href="{% url 'webmain:about' %}">О нас</a></li>
+                <li><a href="{% url 'webmain:tariffs' %}">Тарифы</a></li>
+                <li><a href="{% url 'webmain:blogs' %}">Новости</a></li>
+                <li><a href="{% url 'webmain:contact' %}">Контакты</a></li>
+            </ul>
+        </nav><!-- .navbar -->
+        <a href="#" class="btn-get-started hide-on-mobile" data-toggle="modal" data-target="#myModal">Оставить заявку</a>
+
+        <button id="darkmode-button"><i class="bi bi-moon-fill"></i></button>
+        <i class="mobile-nav-toggle mobile-nav-show bi bi-list"></i>
+        <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
+    </div>
+</header>
+<!-- End Header -->
+
+<!--  Hero Section  -->
+{% for page in homepage %}
+<section id="hero" class="hero sticked-header-offset" style="background: url({{page.first_banner.url}}) center left;">
+    <div id="particles-js"></div>
+    <div id="repulse-circle-div"></div>
+    <div class="container position-relative">
+        <div class="row gy-5 aos-init aos-animate">
+            <div class="col-lg-7 offset-lg-5 dark-bg order-lg-1 d-flex flex-column justify-content-start text-left caption">
+                <h2 data-aos="fade-up">{{ page.first_banner_title }}</br> <span>{{ page.first_banner_title_1 }}</span><span class="circle" data-aos="fade-right" data-aos-delay="800"></span></h2>
+                <p data-aos="fade-up" data-aos-delay="400">{{ page.first_banner_description }}</p>
+                <div class="social" data-aos="fade-up" data-aos-delay="600">
+                    {% for links in sociallinks %}
+                    <a href="{{ links.link }}"><img src="{{ links.icon.url }}" alt="icon"></a>
+                    {% endfor %}
+                </div>
+                <div class="d-flex justify-content-start">
+                     {% if page.first_banner_1btn_link != None %} <a
+                        href="{{page.first_banner_1btn_link}}" class="btn-get-started mr-20" data-aos="fade-up"
+                        data-aos-delay="800">{{ page.first_banner_1btn_name }}</a> {% endif %}
+                    {% if page.first_banner_2btn_link != None %} <a href="{{first_banner_2btn_link}}"
+                                                                    class="btn-get-started" data-aos="fade-up"
+                                                                    data-aos-delay="1000">{{ page.first_banner_2btn_name }}
+                </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endfor %}
+<!-- End Hero Section -->
+
+<main id="main">
+    <!-- Featured -->
+    {% for page in homepage %}
+    <section>
+        <div class="container" id="featured">
+            <div class="section-header" data-aos="fade-up" data-aos-delay="100">
+                <h2>{{ page.choose_us_main_title}}</h2>
+                <p>{{ page.choose_us_main_description }}</p>
+            </div>
+            <div class="row">
+
+                <!-- start  center -->
+                <div class="col-md-5 p-4 p-sm-5 center">
+                    <div class="list-center-wrap" data-aos="fade-up" data-aos-delay="100">
+                        <div class="center-icon">
+                            {% if page.choose_us_main_image %}
+                            <img src="{{ page.choose_us_main_image.url }}" alt="icon">
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <!-- end  center -->
+                <!-- start  right -->
+
+                <div class="col-md-7">
+                    {% for service in services %}
+                    <div class="list-wrap" data-aos="fade-up" data-aos-delay="100">
+                        <div class="icon">
+                            <!-- Здесь проверяем, есть ли у сервиса изображение -->
+                            {% if service.image %}
+                            <img src="{{ service.image.url }}" alt="icon">
+                            {% endif %}
+                        </div>
+                        <div class="description">
+                            <h4>{{ service.name }}</h4>
+                            <p>{{ service.description }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- end  right -->
+            </div>
+
+        </div>
+    </section>
+    {% endfor %}
+    <!-- Featured -->
+
+
+    <!-- Portfolio Section -->
+    {% for gallery in galleries %}
+    <section id="portfolio" class="portfolio">
+        <div class="container" data-aos="fade-up">
+            {% for page in homepage %}
+            <div class="section-header">
+                <h2>{{ page.gallery_main_title }}</h2>
+                <p>{{ page.gallery_main_description }}</p>
+            </div>
+            {% endfor %}
+            <div class="portfolio-isotope" data-portfolio-filter="*" data-portfolio-layout="masonry"
+                 data-portfolio-sort="original-order" data-aos="fade-up" data-aos-delay="100">
+                <div class="row gy-4 portfolio-container">
+                    {% for item in gallery.items.all %}
+                    <div class="col-xl-4 col-md-6 portfolio-item">
+                        <div class="portfolio-wrap">
+                            <a href="{{ item.photo.url }}" data-gallery="portfolio-gallery-app" class="glightbox">
+                                <img src="{{ item.photo.url }}" class="img-fluid" alt="">
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endfor %}
+    <!-- End Portfolio Section -->
+
+    <!-- Start Pricing Section -->
+    <div class="pricing section">
+        <div class="container-fluid">
+            <div class="container">
+                {% for page in homepage %}
+                <div class="section-header">
+                    <h2>{{ page.tariff_main_title }}</h2>
+                    <p>{{ page.tariff_main_description }}</p>
+                </div>
+                {% endfor %}
+                <div class="row">
+                    {% for tarific in tariffs %}
+                    <div class="col-lg-4">
+                        <div class="card text-center">
+                            <div class="title">
+                                <h2>{{ tarific.name }}</h2>
+                            </div>
+                            <div class="price">
+                                <h4><sup>$</sup>{{ tarific.price }}</h4>
+                            </div>
+                            <div class="option">
+                                <ul>
+                                    {% for parameter in tarific.parameters.all %}
+                                    <li><i class="bi bi-check-circle" aria-hidden="true"></i> {{ parameter.name }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <a href="{% url 'webmain:tariffs' %}">Оформить</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Pricing Section -->
+
+
+    <!--  Testimonials Section  -->
+    <section id="testimonials" class="testimonials">
+        <div class="container" data-aos="fade-up">
+            {% for page in homepage %}
+            <div class="section-header">
+                <h2>{{ page.reviews_main_title }}</h2>
+                <p>{{ page.reviews_main_description}}</p>
+            </div>
+            {% endfor %}
+            <div class="slides-3 swiper" data-aos="fade-up" data-aos-delay="100">
+                <div class="swiper-wrapper">
+                    {% for review in reviews %}
+                    <div class="swiper-slide">
+                        <div class="testimonial-wrap">
+                            <div class="testimonial-item">
+                                <div class="d-flex align-items-center info-box">
+                                    <img src="{{review.avatar.url}}"
+                                         class="testimonial-img flex-shrink-0"
+                                         alt="">
+                                    <div>
+                                        <h3>{{review.name}}</h3>
+                                        <h4>CFO</h4>
+                                        <div class="stars">
+                                            {% for i in 1|range:review.stars %}
+                                            <i class="bi bi-star-fill"></i>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <p>
+                                    <i class="bi bi-quote quote-icon-left"></i>
+                                    {{ review.description }}
+                                    <i class="bi bi-quote quote-icon-right"></i>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    <!-- End testimonial item -->
+                </div>
+                <div class="swiper-pagination"></div>
+            </div>
+        </div>
+    </section>
+    <!-- End Testimonials Section -->
+    {% for page in homepage %}
+    <!--  Start Counter Section  -->
+    <div id="stats-counter" class="call-to-action stats-counter section" style="background: url({{page.first_banner.url}}) center left; background-size: cover; background-attachment: fixed;">
+        <div class="container" data-aos="fade-up">
+            <div class="row gy-4 align-items-center">
+                <div class="col-lg-4">
+                    <div class="stats-item d-flex flex-column align-items-center">
+                        <div class="icon circle">{% if page.second_banner_first_stat_image %}<img src="{{page.second_banner_first_stat_image.url}}"
+                                                      alt="icon">{% endif %}</div>
+                        <span data-purecounter-start="0" data-purecounter-end="{{page.second_banner_first_stat_count}}" data-purecounter-duration="1"
+                              class="purecounter"></span>
+                        <p><span>{{page.second_banner_first_stat_title}}</span> {{page.second_banner_first_stat_descr}}</p>
+                    </div><!-- End Stats Item -->
+                </div>
+                <div class="col-lg-4">
+                    <div class="stats-item d-flex flex-column align-items-center">
+                        <div class="icon circle">{% if page.second_banner_sec_stat_image %}<img src="{{page.second_banner_sec_stat_image.url}}"
+                                                      alt="icon"> {% endif %}</div>
+                        <span data-purecounter-start="0" data-purecounter-end="{{page.second_banner_sec_stat_count}}" data-purecounter-duration="1"
+                              class="purecounter"></span>
+                        <p><span>{{page.second_banner_sec_stat_title}}</span> {{page.second_banner_sec_stat_descr}}</p>
+                    </div><!-- End Stats Item -->
+                </div>
+                <div class="col-lg-4">
+                    <div class="stats-item d-flex flex-column align-items-center">
+                        <div class="icon circle">{% if page.second_banner_thi_stat_image %}<img src="{{page.second_banner_thi_stat_image.url}}"
+                                                      alt="icon"> {% endif %}</div>
+                        <span data-purecounter-start="0" data-purecounter-end="{{page.second_banner_thi_stat_count}}" data-purecounter-duration="1"
+                              class="purecounter"></span>
+                        <p><span>{{page.second_banner_thi_stat_title}}</span> {{page.second_banner_thi_stat_descr}}</p>
+                    </div><!-- End Stats Item -->
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    <!--  End Counter Section  -->
+
+    <!--  Clients Section  -->
+    <!-- End Clients Section -->
+
+    <!-- End Our Team Section -->
+
+
+    <!--  Frequently Asked Questions Section  -->
+    <section id="faq" class="faq">
+        <div class="container" data-aos="fade-up">
+            {% for page in homepage %}
+            <div class="section-header">
+                <h2>{{ page.faqs_main_title }}</h2>
+                <p>{{ page.faqs_main_description }}</p>
+            </div>
+            {% endfor %}
+            <div class="row gy-4">
+                <div class="col-lg-12">
+                    {% for faq in faqs %}
+                    <div class="accordion accordion-flush" id="faqlist" data-aos="fade-up" data-aos-delay="100">
+                        <div class="accordion-item">
+                            <h3 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#faq-content-{{ forloop.counter }}">
+                                    <span class="num"><i class="bi bi-arrow-right-circle-fill"></i></span>
+                                    {{faq.question}}
+                                </button>
+                            </h3>
+                            <div id="faq-content-{{ forloop.counter }}" class="accordion-collapse collapse " data-bs-parent="#faqlist">
+                                <div class="accordion-body">
+                                    {{faq.answer}}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <!-- # Faq item-->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <!-- End Frequently Asked Questions Section -->
+
+
+    <!--  Call To Action Section  -->
+
+    {% for page in homepage %}
+    <section id="call-to-action" class="call-to-action"
+             style="background: url({{page.first_banner.url}}) center left; background-size: cover; background-attachment: fixed;">
+        <div class="container text-center aos-init aos-animate" data-aos="zoom-out">
+            <div class="row gy-4">
+                <div class="col-lg-12">
+                    <h3>Давайте обсудим ваши проекты</h3>
+                    <p>Описание </p>
+                    <a class="btn-get-started hide-on-mobile" href="{% url 'webmain:contact' %}">Свяжитесь с нами</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endfor %}
+    <!-- End Call To Action Section -->
+
+
+    <!--  Recent Blog Posts Section  -->
+    <section id="recent-posts" class="recent-posts sections-bg">
+        <div class="container" data-aos="fade-up">
+            <div class="section-header">
+                <h2>Статьи</h2>
+                <p>Описание</p>
+            </div>
+            <div class="row gy-4">
+                {% for post in blogs %}
+                <div class="col-lg-4">
+                    <article>
+                        <div class="post-img">
+                            <img src="{{ post.image.url }}" alt="Blog Image" class="img-fluid">
+                        </div>
+                        <p class="post-category">{{ post.category.name }}</p>
+                        <h2 class="title">
+                            <a href="{% url 'webmain:blog' post.slug %}">{{ post.title }}</a>
+                        </h2>
+                        <div class="d-flex align-items-center">
+                            <div class="post-meta">
+                                <p class="post-date">
+                                    <time datetime="{{ post.created_at|date:'Y-m-d' }}">{{ post.created_at|date:'M d, Y' }}
+                                    </time>
+                                </p>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                {% endfor %}
+            </div>
+
+
+        </div><!-- End recent posts list -->
+
+        </div>
+    </section><!-- End Recent Blog Posts Section -->
+
+    <!-- Start Contact Section -->
+
+    <!-- End Contact Section -->
+
+
+</main><!-- End #main -->
+{% for page in homepage %}
+<!--  Footer  -->
+<footer id="footer" class="footer-section" style="background: url({{page.first_banner.url}}) center left;">
+    <div class="container">
+        <div class="footer-content pt-5 pb-5">
+            <div class="container">
+                <div class="row">
+                    <!-- Logo Section -->
+                    <div class="col-xl-4 col-lg-4 mb-50">
+                        <div class="footer-widget">
+                            <div class="footer-logo">
+                                <a href="home.html" class="logo d-flex align-items-center">
+                                    {% if settings.logo %}
+                                    <img src="{{ settings.logo.url }}" alt="logo">
+                                    {% endif %}
+                                </a>
+                            </div>
+                            <div class="footer-text">
+                                <p>{{ settings.message_footer }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Menu Section -->
+                    <div class="col-lg-2 col-md-6 col-sm-12 footer-column">
+
+                        <div class="service-widget footer-widget">
+                            <div class="footer-widget-heading">
+                                <h3>Общее</h3>
+                            </div>
+                            <ul class="list">
+                                <li><a href="{% url 'webmain:home' %}">Главная</a></li>
+                                <li><a href="{% url 'webmain:about' %}">О нас</a></li>
+                                <li><a href="{% url 'webmain:tariffs' %}">Тарифы</a></li>
+                                <li><a href="{% url 'webmain:blogs' %}">Новости</a></li>
+                                <li><a href="{% url 'webmain:contact' %}">Контакты</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Information Section -->
+                    <div class="col-lg-2 col-md-6 col-sm-12 footer-column">
+
+                        <div class="service-widget footer-widget">
+                            <div class="footer-widget-heading">
+                                <h3>Информация</h3>
+                            </div>
+                            <ul class="list">
+                                <li><a href="">ЧаВо</a></li>
+                                <li><a href="">Галерея</a></li>
+                                {% get_pages_footer as pages_footer_bottom %}
+                                {% for page in pages_footer_bottom %}
+                                {% if page.viewtype == 1 %}
+                                <li><a href="{{ page.name }}">{{ page.name }}</a></li>
+                                {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Contacts Section -->
+
+                    <div class="col-xl-4 col-lg-4 mb-50">
+                        <div class="contact-widget footer-widget">
+                            <div class="footer-widget-heading">
+                                <h3>Контакты</h3>
+                            </div>
+                            {% get_contacts_item as contacts %}
+                            <div class="footer-text">
+                                <p><i class="bi bi-geo-alt-fill mr-15"></i> {{ contacts.address }}</p>
+                                <p><i class="bi bi-telephone-inbound-fill mr-15"></i> {{ contacts.phone }}</p>
+                                <p><i class="bi bi-envelope-fill mr-15"></i> {{ contacts.email }}</p>
+                            </div>
+                        </div>
+
+                        <div class="footer-widget">
+                            <div class="footer-widget-heading">
+                                <h3>Оставить заявку</h3>
+                            </div>
+                            <div class="footer-text mb-25">
+                                <p>Не упустите возможность получить выгодное предложение</p>
+                            </div>
+                            <div class="subscribe-form">
+                                <form action="index.html#">
+                                    <input type="text" placeholder="Ваш номер телефона">
+                                    <button><i class="bi bi-phone-vibrate" ></i></button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-12 text-center text-lg-left">
+                        <div class="copyright-text">
+                            <p>{{ settings.copyright }} <a href=""></a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- End Footer -->
+{% endfor %}
+<a id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center active" style="cursor: pointer;">
+    <i class="bi bi-arrow-up-short"></i>
+</a>
+
+<div id="preloader"></div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="myModalLabel">Оставить заявку</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-8 col-md-12" data-aos="fade-left">
+                        <div class="contact-form-box contact-form contact-form-3">
+                            <div class="form-container-box">
+                                <form class="contact-form form" id="contact-form" method="post" action="{% url 'webmain:home' %}">
+                                    {% csrf_token %}
+                                    <div class="controls">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group form-input-box">
+                                                    <input type="text" class="form-control" id="id_name" name="name" placeholder="Имя*" required style="color:#3a3a3a;" maxlength="25">
+                                                    <div class="help-block with-errors"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group form-input-box">
+                                                    <input type="tel" class="form-control" id="id_phone" name="phone" placeholder="Номер телефона*" required style="color:#3a3a3a;" maxlength="20">
+                                                    <div class="help-block with-errors"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <button type="submit" class="btn btn-primary" data-text="Send Message">Оставить заявку</button>
+                                            </div>
+                                            {% if request.GET.submitted %}
+                                                <div class="col-md-12">
+                                                    <div class="alert alert-success">
+                                                        Спасибо! Ваше сообщение отправлено.
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- Vendor JS Files -->
+<script src="{% static 'site/javascripts/jquery.min.js' %}"></script>
+<script src="{% static 'site/vendor/glightbox/js/glightbox.min.js' %}"></script>
+<script src="{% static 'site/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'site/vendor/aos/aos.js' %}"></script>
+<script src="{% static 'site/vendor/swiper/swiper-bundle.min.js' %}"></script>
+<script src="{% static 'site/javascripts/plugins.js' %}"></script>
+<script src="{% static 'site/javascripts/purecounter_vanilla.js' %}"></script>
+<script src="{% static 'site/javascripts/validator.min.js' %}"></script>
+<script src="{% static 'site/javascripts/contactform.js' %}"></script>
+<script src="{% static 'site/javascripts/particles.min.js' %}"></script>
+<script src="{% static 'site/javascripts/script.js' %}"></script>
+
+</head>
+</body>
+<!-- Template Main JS File -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
+<script src="{% static 'site/javascripts/main.js' %}"></script>
+<script>
+    document.getElementById('scroll-top').addEventListener('click', function(event) {
+        event.preventDefault();  // Предотвращает переход по ссылке
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+</script>
+<script>
+    document.querySelector('.cta-btn').addEventListener('click', function(event) {
+        event.preventDefault();  // Предотвращает переход по ссылке
+        document.querySelector('#contact').scrollIntoView({
+            behavior: 'smooth'
+        });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+    // Валидация формы
+    $('#contact-form').validate({
+        rules: {
+            name: {
+                required: true,
+                maxlength: 25
+            },
+            phone: {
+                required: true,
+                maxlength: 20
+            }
+        },
+        messages: {
+            name: {
+                required: "Пожалуйста, введите ваше имя",
+                maxlength: "Имя не должно превышать 25 символов"
+            },
+            phone: {
+                required: "Пожалуйста, введите ваш номер телефона",
+                maxlength: "Номер телефона не должен превышать 20 символов"
+            }
+        },
+    });
+});
+</script>
+</body>
+</html>

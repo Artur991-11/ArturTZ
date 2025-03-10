@@ -1,0 +1,72 @@
+<div class="col-xl-12">
+    <div class="card">
+        <div class="card-header align-items-center">
+            <div class="card-action card-tabs">
+                <ul class="nav nav-tabs style-1" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="messages.html#AllMessage" role="tab" aria-selected="false">
+                            Личные
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="messages.html#Unread" role="tab" aria-selected="false">
+                            Групповой
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="card-body message-bx px-0 pt-3" >
+            <div class="tab-content dz-scroll height520" id="message-bx">
+                <div class="tab-pane fade show active" id="AllMessage" role="tabpanel">
+                    {% for chat in personal_chats %}
+                    <a  href="{% url 'service:chats' chat.id %}"  class="media chat-list-area active">
+                        <div class="image-bx">
+                            <img src="
+                                     {% if chat.users.all %}
+                                     {% with chat.users.all.0 as other_user %}
+                                     {% if other_user.avatar %}
+                                     {{ other_user.avatar.url }}
+                                     {% endif %}
+                                     {% endwith %}
+                                     {% endif %}
+                            " alt="" class="rounded-circle me-sm-4 me-2 img-1">
+                        </div>
+                        <div class="media-body">
+                            <div class="d-flex mb-sm-2 mb-0">
+                                <h6 class="text-black mb-0 font-w600 fs-16">{{chat.name}}</h6>
+                                <span class="ms-auto fs-14">{% if chat.last_message_time %}{{ chat.last_message_time|date:"d.m.Y H:i:s" }}{% else %}{% endif %}</span>
+                            </div>
+                            <p class="text-black">
+                                {% if chat.last_message_content %} {{ chat.last_message_content|slice:"139" }} {% endif %}
+                                {% if chat.has_unread_messages %}<span class="message-read"><i class="fa fa-check" aria-hidden="true"></i></span>{% else %}<span class="message-read"><i class="fa fa-check" aria-hidden="true"></i><i class="fa fa-check" aria-hidden="true"></i></span>{% endif %}
+
+                            </p>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+                <div class="tab-pane fade" id="Unread" role="tabpanel">
+                    {% for chat in group_chats %}
+                    <a href="{% url 'service:chats' chat.id %}" class="media chat-list-area">
+                        <div class="image-bx me-sm-4 me-2">
+                            <img src="images/profile/Untitled-1.jpg" alt="" class="rounded-circle img-1">
+                            <span class="active"></span>
+                        </div>
+                        <div class="media-body">
+                            <div class="d-flex mb-sm-2 mb-0">
+                                <h6 class="text-black font-w600 fs-16 mb-0">{{chat.name}}</h6>
+                                <span class="ms-auto fs-14">{% if chat.last_message_time %}{{ chat.last_message_time|date:"d.m.Y H:i:s" }}{% else %}{% endif %}</span>
+                            </div>
+                            <p class="text-black">
+                                {% if chat.last_message_content %} {{ chat.last_message_content|slice:"139" }} {% endif %}
+                                {% if chat.has_unread_messages %}<span class="message-read"><i class="fa fa-check" aria-hidden="true"></i></span>{% else %}<span class="message-read"><i class="fa fa-check" aria-hidden="true"></i><i class="fa fa-check" aria-hidden="true"></i></span>{% endif %}
+                            </p>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

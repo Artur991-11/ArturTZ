@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static range_filter %}
+{% block title %}{{ seo_title }}{% endblock title %}
+{% block description %}{{ seo_description }}{% endblock description %}
+{% block propertytitle %}{% if seo_previev %}{{ seo_previev.url }} {% endif %} {% endblock propertytitle %}
+{% block propertydescription %}{{ seo_propertytitle }}{% endblock propertydescription %}
+{% block propertyimage %}{{ seo_propertydescription }}{% endblock propertyimage %}
+{% block head %}
+<!-- Additional head content specific to this page -->
+<div class="breadcrumbs">
+    <div class="page-header d-flex align-items-center">
+        <div class="container position-relative">
+            <div class="row d-flex justify-content-center">
+                <div class="col-lg-6 text-center">
+                    <h2>About Us</h2>
+                    <p>Lorem ipsum dolor sit amet consectetur adipiscing elit</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <nav>
+        <div class="container">
+            <ol>
+                <li><a href="{% url 'webmain:home' %}">Главная</a></li>
+                <li>О нас</li>
+            </ol>
+        </div>
+    </nav>
+</div>
+{% endblock head %}
+
+{% block content %}
+<main id="main">
+
+    <div class="single-page">
+
+        <!-- Featured -->
+        <section>
+            <div class="container" id="featured">
+                <div class="section-header" data-aos="fade-up" data-aos-delay="100">
+                    <h2>{{seo_title}}</h2>
+                    <p>{{seo_description}}</p>
+                </div>
+                <div class="row">
+
+                    <!-- start  center -->
+                    <div class="col-md-5 p-4 p-sm-5 center">
+                        <div class="list-center-wrap" data-aos="fade-up" data-aos-delay="100">
+                            <div class="center-icon">
+                                {% for page in homepages %}
+                                {% if page.choose_us_main_image %}
+                                <img src="{{ page.choose_us_main_image.url }}" alt="icon">
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end  center -->
+                    <!-- start  right -->
+
+                    <div class="col-md-7">
+                        {% for service in services %}
+                        <div class="list-wrap" data-aos="fade-up" data-aos-delay="100">
+                            <div class="icon">
+                                {% if service.image %}
+                                <img src="{{ service.image.url }}" alt="icon">
+                                {% endif %}
+                            </div>
+                            <div class="description">
+                                <h4>{{ service.name }}</h4>
+                                <p>{{ service.description }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- end  right -->
+                </div>
+
+            </div>
+        </section>
+        <!-- Featured -->
+        <section>
+            <div class="container" id="about">
+                <div class="section-header" data-aos="fade-up" data-aos-delay="100">
+                    <h2>О нас</h2>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="about-description" data-aos="fade-up" data-aos-delay="100">
+                            <p>{{ pageinformation|safe }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+</main><!-- End #main -->
+{% endblock content %}

@@ -1,0 +1,258 @@
+{% extends 'lk/base.html' %}
+{% load static %}
+{% block title %}{{ seo_title }}{% endblock title %}
+{% block description %}{{ seo_description }}{% endblock description %}
+{% block propertytitle %}{% if seo_previev %}{{ seo_previev.url }}{% endif %}{% endblock propertytitle %}
+{% block propertydescription %}{{ seo_propertytitle }}{% endblock propertydescription %}
+{% block propertyimage %}{{ seo_propertydescription }}{% endblock propertyimage %}
+{% block head %}{% endblock head %}
+
+{% block content %}
+<!-- row -->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xl-5">
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="card">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="d-flex me-auto mb-sm-0 mb-2 align-items-center">
+                                <img src="{% if user.avatar %}{{ user.avatar.url }}{% endif %}" alt="" width="55" class="rounded-circle me-2">
+                                <div>
+                                    <h5 class="fs-18 text-black font-w600">{{ user.username }}</h5>
+                                </div>
+                            </div>
+                            <a href="{% url 'service:chat_create' %}" class="btn btn-primary btn-rounded text-white shadow-primary">
+                                <i class="las la-comment-dots me-2 scale5"></i>+ Новый
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% include 'lk/chat/chat_list.html' %}
+            </div>
+        </div>
+        <div class="col-xl-7">
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="card message-bx chat-box">
+                        <div class="card-header">
+                            <div>
+                                <h5 class="text-black font-w500 mb-sm-1 mb-0 title-nm">
+                                    {% if chat.name %}
+                                        {{ chat.name }}
+                                    {% else %}
+                                        {% if chat.users.all %}
+                                            {% with chat.users.first as other_user %}
+                                                {{ other_user.name }}
+                                            {% endwith %}
+                                        {% endif %}
+                                    {% endif %}
+                                </h5>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <span>{{ last_message_time }}</span>
+                                <div class="dropdown ms-2">
+                                    <a href="javascript:void(0);" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z" stroke="#575757" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            <path d="M12 6C12.5523 6 13 5.55228 13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5C11 5.55228 11.4477 6 12 6Z" stroke="#575757" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            <path d="M12 20C12.5523 20 13 19.5523 13 19C13 18.4477 12.5523 18 12 18C11.4477 18 11 18.4477 11 19C11 19.5523 11.4477 20 12 20Z" stroke="#575757" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-end">
+                                        {% if chat.type == 1 %}
+                                            <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#EditChat">Редактировать</a>
+                                        {% endif %}
+                                        <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#DeleteChat">Удалить</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body chat-box-area dz-scroll" id="chartBox">
+                            {% for message in chat_messages reversed %}
+                                {% if message.author == request.user %}
+                                    <div class="media mb-4 justify-content-end align-items-end">
+                                        <div class="message-sent">
+                                            <p class="mb-1">{{ message.content }}</p>
+                                            <span class="fs-12">{{ message.date }}</span>
+                                        </div>
+                                        <div class="image-bx ms-sm-4 ms-2 mb-4">
+                                            <img src="{% if message.author.avatar %}{{ message.author.avatar.url }}{% endif %}" alt="" class="rounded-circle img-1">
+                                            <span class="active"></span>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="media justify-content-start align-items-start">
+                                        <div class="image-bx me-sm-4 me-2">
+                                            <img src="{% if message.author.avatar %}{{ message.author.avatar.url }}{% endif %}" alt="" class="rounded-circle img-1">
+                                            <span class="active"></span>
+                                        </div>
+                                        <div class="message-received">
+                                            <p class="mb-1">{{ message.content }}</p>
+                                            <span class="fs-12">{{ message.date }}</span>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <div class="card-footer border-0 type-massage">
+                            <form id="commentForm" method="post" enctype="multipart/form-data" action="{% url 'service:add_mesage' chat.id %}">
+                                {% csrf_token %}
+                                <div class="input-group">
+                                    {{ form.content }}
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn pe-0"><i class="las la-paperclip scale5 text-secondary"></i></button>
+                                        <button type="button" class="btn"><i class="las la-image scale5 text-secondary"></i></button>
+                                        <button type="submit" class="btn btn-primary rounded text-white">Отправить</button>
+                                    </div>
+                                </div>
+                                {{ form.files }}
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal для удаления чата -->
+<div class="modal fade" id="DeleteChat" tabindex="-1" aria-labelledby="DeleteChatLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="DeleteChatLabel">Удаление чата</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Вы уверены что хотите удалить? Вся переписка будет удаленна без возвратно.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary btn-rounded text-white shadow-primary" onclick="deleteChat('{{ chat.pk }}')">Удалить чат</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal для редактирования чата -->
+<div class="modal fade" id="EditChat" tabindex="-1" aria-labelledby="EditChatLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="EditChatLabel">Редактировать чат</h5>
+                <button type="button" class="btn-close" onclick="closeEditModal()" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Iframe для загрузки формы редактирования -->
+                <iframe id="editChatIframe" style="width: 100%; height: 400px;" frameborder="0"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var editChatModal = document.getElementById('EditChat');
+        var iframe = document.getElementById('editChatIframe');
+
+        if (editChatModal) {
+            editChatModal.addEventListener('show.bs.modal', function (event) {
+                iframe.src = "{% url 'service:chat_edit' chat.pk %}";
+            });
+
+            // Обработчик для получения сообщения от iframe
+            window.addEventListener('message', function(event) {
+                if (event.data === 'closeEditChatModal') {
+                    var modal = bootstrap.Modal.getInstance(editChatModal);
+                    if (modal) {
+                        modal.hide();
+                        location.reload(); // Перезагрузка страницы после закрытия модального окна
+                    }
+                }
+            });
+
+            // Функция для закрытия модального окна, вызываемая из кнопки закрытия
+            window.closeEditModal = function() {
+                var modal = bootstrap.Modal.getInstance(editChatModal);
+                if (modal) {
+                    modal.hide();
+                    location.reload(); // Перезагрузка страницы после закрытия модального окна
+                }
+            };
+        }
+    });
+</script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var commentForm = document.getElementById('commentForm');
+        if (commentForm) {
+            commentForm.addEventListener('submit', function(event) {
+                event.preventDefault(); // Предотвращение стандартной отправки формы
+
+                var formData = new FormData(this);
+
+                fetch(this.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                    },
+                    credentials: 'same-origin'
+                }).then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    return response.json().then(data => {
+                        throw new Error(JSON.stringify(data.errors));
+                    });
+                }).then(data => {
+                    console.log('Успешно отправлено:', data);
+                    this.reset();
+                    refreshTicketList(); // Вызов функции обновления списка тикетов
+                }).catch(error => {
+                    console.error('Ошибка:', error);
+                });
+            });
+
+            function refreshTicketList() {
+                $('#chartBox').load(location.href + ' #chartBox>*', function(response, status, xhr) {
+                    if (status == "error") {
+                        console.log("Ошибка при загрузке данных:", xhr.status, xhr.statusText);
+                    } else {
+                        console.log("Данные успешно обновлены");
+                    }
+                });
+            }
+
+            refreshTicketList(); // Пример вызова функции для тестирования
+        } else {
+            console.log('Форма комментариев не найдена');
+        }
+    });
+</script>
+<script>
+    function deleteChat(chatId) {
+        fetch(/chats/${chatId}/delete/, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin'
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Редирект на /chats/
+                    window.location.href = '/chats/';
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+            });
+    }
+</script>
+
+{% endblock content %}

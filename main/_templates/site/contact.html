@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{% load static range_filter %}
+{% block title %}{{ seo_title }}{% endblock title %}
+
+{% block head %}
+<!-- Подключение Yandex Maps API -->
+<script src="https://api-maps.yandex.ru/2.1/?apikey=ab53fa1b-6dea-4ec4-a589-a5985696b619&lang=ru_RU" type="text/javascript"></script>
+<div class="breadcrumbs">
+    <div class="page-header d-flex align-items-center">
+        <div class="container position-relative">
+            <div class="row d-flex justify-content-center">
+                <div class="col-lg-6 text-center">
+                    <h2>Контакты</h2>
+                    <p>{{ seo_description }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <nav>
+        <div class="container">
+            <ol>
+                <li><a href="{% url 'webmain:home'%}">Главная</a></li>
+                <li>Контакты</li>
+            </ol>
+        </div>
+    </nav>
+</div><!-- End Breadcrumbs -->
+
+<!-- Внутренние стили для сине-белого оформления -->
+<style>
+    .ang-contacts-container {
+        display: flex;
+    }
+    .ang-tabs__item--list {
+        width: 30%;
+        background-color: #f0f8ff;
+        padding: 20px;
+        border-radius: 8px;
+    }
+    .list .items {
+        max-height: 500px;
+        overflow-y: auto;
+    }
+    .items label {
+        display: block;
+        padding: 10px;
+        margin-bottom: 10px;
+        background-color: #ffffff;
+        border: 1px solid #87cefa;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+    .items label:hover {
+        background-color: #e0f7ff;
+    }
+    .info .name {
+        font-weight: bold;
+        color: #1e90ff;
+    }
+    .info .address {
+        margin-top: 5px;
+    }
+    .buttons a {
+        display: inline-block;
+        padding: 5px 10px;
+        margin-top: 10px;
+        color: #ffffff;
+        background-color: #1e90ff;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+    .buttons a:hover {
+        background-color: #0b78d0;
+    }
+    #yandex-map {
+        width: 70%;
+        height: 500px;
+        border: 2px solid #87cefa;
+        border-radius: 8px;
+        margin-left: 20px;
+    }
+</style>
+{% endblock head %}
+
+{% block content %}
+<main id="main">
+    <div class="single-page">
+        <div id="contact" class="contact-section section">
+            <div class="container">
+                <div class="ang-contacts-container">
+                    <div class="ang-tabs__item ang-tabs__item--list active " data-tab="contacts-tab-list">
+                        <div class="list ">
+                            <div class="ang-scrollbar ang-scrollbar--h ">
+                                <div class="items j-contacts-items" id="contacts-list">
+                                    {% for contact in contacts %}
+                                    <label for="item{{ forloop.counter }}" itemscope itemtype="http://schema.org/Organization" data-lat="{{ contact.latitude }}" data-lng="{{ contact.longitude }}">
+                                        <div class="info">
+                                            <div class="name">{{ contact.departaments }}</div>
+                                            <div class="address" itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
+                                                {{ contact.address }}
+                                            </div>
+                                        </div>
+                                    </label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="yandex-map"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+        <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            ymaps.ready(init);
+
+            function init() {
+                var itemsContainer = document.querySelector('.j-contacts-items');
+                if (itemsContainer) {
+                    var labels = itemsContainer.querySelectorAll('label');
+                    var placemarks = [];
+                    var firstCoordinates = null;
+                    var myMap = null;
+
+                    labels.forEach(function(label, index) {
+                        var latitudeStr = label.getAttribute('data-lat').replace(',', '.');
+                        var longitudeStr = label.getAttribute('data-lng').replace(',', '.');
+                        var latitude = parseFloat(latitudeStr);
+                        var longitude = parseFloat(longitudeStr);
+
+                        if (!isNaN(latitude) && !isNaN(longitude)) {
+                            if (index === 0) {
+                                firstCoordinates = [latitude, longitude];
+                            }
+
+                            var placemark = new ymaps.Placemark([latitude, longitude], {
+                                balloonContentHeader: label.querySelector('.name').textContent,
+                                balloonContentBody: label.querySelector('.address').textContent
+                            });
+
+                            placemarks.push(placemark);
+
+                            label.addEventListener('click', function() {
+                                myMap.setCenter([latitude, longitude]);
+                            });
+                        }
+                    });
+
+                    if (firstCoordinates) {
+                        myMap = new ymaps.Map("yandex-map", {
+                            center: firstCoordinates,
+                            zoom: 10
+                        });
+
+                        placemarks.forEach(function(placemark) {
+                            myMap.geoObjects.add(placemark);
+                        });
+                    } else {
+                        console.error('No valid coordinates found.');
+                    }
+                } else {
+                    console.error('Items container not found.');
+                }
+            }
+        });
+    </script>
+
+
+
+</main>
+{% endblock content %}

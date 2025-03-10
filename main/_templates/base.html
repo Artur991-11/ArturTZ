@@ -1,0 +1,278 @@
+{% load static range_filter %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> {% get_settings_first as settings %}{{ settings.name }} - {% block title %}{% endblock title %}</title>
+    <meta content="{% block description %}{% endblock description %}" name="description">
+    <meta property="og:title" content="{% block propertytitle %}{% endblock propertytitle %}">
+    <meta property="og:description" content="{% block propertydescription %}{% endblock propertydescription %}">
+    <meta property="og:image" content="{% block propertyimage %}{% endblock propertyimage %}">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon"
+          href="{% if settings.favicon %}{{ settings.favicon.url }}{% endif %}"/>
+    <!-- Analytic link -->
+    {{ settings.yandex_metrica }}
+    {{ settings.google_analytic }}
+    {% block head %}{% endblock head %}
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+    <!-- Vendor CSS Files -->
+    <link href="{% static 'site/vendor/aos/aos.css' %}" rel="stylesheet">
+    <link href="{% static 'site/stylesheets/font-awesome.min.css' %}" rel="stylesheet">
+    <link href="{% static 'site/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+    <link href="{% static 'site/vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
+    <link href="{% static 'site/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'site/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+    <!-- Main CSS File -->
+    <link href="{% static 'site/stylesheets/styles.css' %}" rel="stylesheet">
+</head>
+<body>
+<header id="header" class="header d-flex align-items-center sticked stikcy-menu">
+    <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
+        <a href="{% url 'webmain:home' %}" class="logo d-flex align-items-center">
+            <img src="{% static 'site/images/logo.png' %}" alt="logo">
+        </a>
+        <nav id="navbar" class="navbar">
+            <ul>
+                <li><a href="{% url 'webmain:home' %}">Главная</a></li>
+                <li><a href="{% url 'webmain:about' %}">О нас</a></li>
+                <li><a href="{% url 'webmain:tariffs' %}">Тарифы</a></li>
+                <li><a href="{% url 'webmain:blogs' %}">Новости</a></li>
+                <li><a href="{% url 'webmain:contact' %}">Контакты</a></li>
+            </ul>
+        </nav><!-- .navbar -->
+        <a href="#" class="btn-get-started hide-on-mobile" data-toggle="modal" data-target="#myModal">Оставить заявку</a>
+        <button id="darkmode-button"><i class="bi bi-moon-fill"></i></button>
+        <i class="mobile-nav-toggle mobile-nav-show bi bi-list"></i>
+        <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
+    </div>
+</header>
+<!-- End Header -->
+
+
+{% block content %}{% endblock content %}
+{% get_homepage_item as homepage %}
+
+<footer id="footer" class="footer-section" style="background: url({% for page in homepage %}{{page.first_banner.url}}{% endfor %}) center left;">
+    <div class="container">
+        <div class="footer-content pt-5 pb-5">
+            <div class="container">
+                <div class="row">
+                    <!-- Logo Section -->
+                    <div class="col-xl-4 col-lg-4 mb-50">
+
+                        <div class="footer-widget">
+                            <div class="footer-logo">
+                                <a href="{% url 'webmain:home' %}" class="logo d-flex align-items-center">
+                                    {% if settings.logo %}
+                                     <img src="{{ settings.logo.url }}" alt="logo">
+                                    {% endif %}
+                                </a>
+                            </div>
+                            <div class="footer-text">
+                                <p>{{ settings.description }}</p>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- Menu Section -->
+                    <div class="col-lg-2 col-md-6 col-sm-12 footer-column">
+                        <div class="service-widget footer-widget">
+                            <div class="footer-widget-heading">
+                                <h3>Общее</h3>
+                            </div>
+                            <ul class="list">
+                                <li><a href="../archetype/services.html">Главная</a></li>
+                                <li><a href="../archetype/services.html">О нас</a></li>
+                                <li><a href="../archetype/services.html">Тарифы</a></li>
+                                <li><a href="../archetype/services.html">Новости</a></li>
+                                <li><a href="../archetype/services.html">Контакты</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Information Section -->
+                    <div class="col-lg-2 col-md-6 col-sm-12 footer-column">
+                        <div class="service-widget footer-widget">
+                            <div class="footer-widget-heading">
+                                <h3>Информация</h3>
+                            </div>
+                            <ul class="list">
+                                <li><a href="">ЧаВо</a></li>
+                                <li><a href="">Галерея</a></li>
+                                {% get_pages_footer as pages_footer_bottom %}
+                                {% for page in pages_footer_bottom %}
+                                {% if page.viewtype == 1 %}
+                                <li><a href="{{ page.name }}">{{ page.name }}</a></li>
+                                {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Contacts Section -->
+                    <div class="col-xl-4 col-lg-4 col-md-6 mb-50">
+                        <div class="contact-widget footer-widget">
+                            <div class="footer-widget-heading">
+                                <h3>Контакты</h3>
+                            </div>
+                            {% get_contacts_item as contacts %}
+                            <div class="footer-text">
+                                <p><i class="bi bi-geo-alt-fill mr-15"></i> {{ contacts.address }}</p>
+                                <p><i class="bi bi-telephone-inbound-fill mr-15"></i> {{ contacts.phone }}</p>
+                                <p><i class="bi bi-envelope-fill mr-15"></i> {{ contacts.email }}</p>
+                            </div>
+                        </div>
+                        <div class="footer-widget">
+                            <div class="footer-widget-heading">
+                                <h3>Оставить заявку</h3>
+                            </div>
+                            <div class="footer-text mb-25">
+                                <p>Не упустите возможность получить выгодное предложение</p>
+                            </div>
+                            <div class="subscribe-form">
+                                <form action="index.html#">
+                                    <input type="text" placeholder="Ваш номер телефона">
+                                    <button><i class="bi bi-phone-vibrate" ></i></button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-12 text-center text-lg-left">
+                        <div class="copyright-text">
+                             <p>{{ settings.copyright }} <a href=""></a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% block footer %}{% endblock footer %}
+</footer>
+<!-- End Footer -->
+
+<a href="#" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="myModalLabel">Оставить заявку</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-8 col-md-12" data-aos="fade-left">
+                        <div class="contact-form-box contact-form contact-form-3">
+                            <div class="form-container-box">
+                                <form class="contact-form form" id="contact-form" method="post" action="{% url 'webmain:home' %}">
+                                    {% csrf_token %}
+                                    <div class="controls">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group form-input-box">
+                                                    <input type="text" class="form-control" id="id_name" name="name" placeholder="Имя*" required style="color:#3a3a3a;" maxlength="25">
+                                                    <div class="help-block with-errors"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group form-input-box">
+                                                    <input type="tel" class="form-control" id="id_phone" name="phone" placeholder="Номер телефона*" required style="color:#3a3a3a;" maxlength="20">
+                                                    <div class="help-block with-errors"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <button type="submit" class="btn btn-primary" data-text="Send Message">Оставить заявку</button>
+                                            </div>
+                                            {% if request.GET.submitted %}
+                                                <div class="col-md-12">
+                                                    <div class="alert alert-success">
+                                                        Спасибо! Ваше сообщение отправлено.
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- Vendor JS Files -->
+<script src="{% static 'site/javascripts/jquery.min.js' %}"></script>
+<script src="{% static 'site/vendor/glightbox/js/glightbox.min.js' %}"></script>
+<script src="{% static 'site/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'site/vendor/aos/aos.js' %}"></script>
+<script src="{% static 'site/vendor/swiper/swiper-bundle.min.js' %}"></script>
+<script src="{% static 'site/javascripts/plugins.js' %}"></script>
+<script src="{% static 'site/javascripts/purecounter_vanilla.js' %}"></script>
+<script src="{% static 'site/javascripts/validator.min.js' %}"></script>
+<script src="{% static 'site/javascripts/contactform.js' %}"></script>
+<script src="{% static 'site/javascripts/particles.min.js' %}"></script>
+<script src="{% static 'site/javascripts/script.js' %}"></script>
+
+<!-- Template Main JS File -->
+<script src="{% static 'site/javascripts/main.js' %}"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
+<script src="{% static 'site/javascripts/main.js' %}"></script>
+<script>
+    document.getElementById('scroll-top').addEventListener('click', function(event) {
+        event.preventDefault();  // Предотвращает переход по ссылке
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+</script>
+<script>
+    document.querySelector('.cta-btn').addEventListener('click', function(event) {
+        event.preventDefault();  // Предотвращает переход по ссылке
+        document.querySelector('#contact').scrollIntoView({
+            behavior: 'smooth'
+        });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+    // Валидация формы
+    $('#contact-form').validate({
+        rules: {
+            name: {
+                required: true,
+                maxlength: 25
+            },
+            phone: {
+                required: true,
+                maxlength: 20
+            }
+        },
+        messages: {
+            name: {
+                required: "Пожалуйста, введите ваше имя",
+                maxlength: "Имя не должно превышать 25 символов"
+            },
+            phone: {
+                required: "Пожалуйста, введите ваш номер телефона",
+                maxlength: "Номер телефона не должен превышать 20 символов"
+            }
+        },
+    });
+});
+</script>
+</body>
+</html>

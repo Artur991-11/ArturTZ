@@ -1,0 +1,88 @@
+<div id="contact" class="contact-section section">
+        <div class="section-header">
+            <h2>Свяжитесь с нами</h2>
+            <p>Оставьте заявку</p>
+        </div>
+        <div class="container">
+            <div class="row">
+                {% for contact in contacts %}
+                <div class="col-lg-4 col-md-12" data-aos="fade-right">
+                    <div class="contact-information-box-3">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="single-contact-info-box">
+                                    <div class="contact-info">
+                                        <h6>Адрес: </h6>
+                                        <p>{{ contact.address }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="single-contact-info-box">
+                                    <div class="contact-info">
+                                        <h6>Телефон: </h6>
+                                        <p>{{ contact.phone }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="single-contact-info-box">
+                                    <div class="contact-info">
+                                        <h6>Почта:</h6>
+                                        <p>{{ contact.email }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="col-lg-8 col-md-12" data-aos="fade-left">
+                    <div class="contact-form-box contact-form contact-form-3">
+                        <div class="form-container-box">
+                            <form class="contact-form form" id="contact-form" method="post" action="">
+                                {% csrf_token %}
+                                <div class="controls">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group form-input-box">
+                                                <input type="text" class="form-control" id="id_name" name="name" placeholder="Имя*" required style="color:#3a3a3a;" maxlength="25">
+                                                <div class="help-block with-errors"></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group form-input-box">
+                                                <input type="email" class="form-control" id="id_email" name="email" placeholder="Почта*" required style="color:#3a3a3a;" maxlength="100">
+                                                <div class="help-block with-errors"></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group form-input-box">
+                                                <input type="text" class="form-control" id="id_subject" name="subject" placeholder="Тема" style="color:#3a3a3a;" maxlength="100">
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group form-input-box">
+                                                <textarea class="form-control" id="id_message" name="message" rows="7" placeholder="Напишите ваше сообщение*" required style="color:#3a3a3a;" maxlength="300"></textarea>
+                                                <div class="help-block with-errors"></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <button type="submit" class="btn btn-primary" data-text="Send Message">Send Message</button>
+                                        </div>
+                                        {% if request.GET.submitted %}
+                                        <div class="col-md-12">
+                                            <div class="alert alert-success">
+                                                Thank You! Your message has been sent.
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

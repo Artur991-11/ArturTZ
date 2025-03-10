@@ -1,0 +1,67 @@
+{% extends 'lk/base.html' %}
+{% load static  %}
+{% block title %}{{ seo_title }}{% endblock title %}
+{% block description %}{{ seo_description }}{% endblock description %}
+{% block propertytitle %}{% if seo_previev %}{{ seo_previev.url }} {% endif %} {% endblock propertytitle %}
+{% block propertydescription %}{{ seo_propertytitle }}{% endblock propertydescription %}
+{% block propertyimage %}{{ seo_propertydescription }}{% endblock propertyimage %}
+{% block head %}{% endblock head %}
+
+{% block content %}
+<!-- Add Project -->
+<div class="modal fade" id="addProjectSidebar">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create Project</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label class="text-black font-w500">Project Name</label>
+                        <input type="text" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="text-black font-w500">Dadeline</label>
+                        <div class="cal-icon"><input type="date" class="form-control"><i class="far fa-calendar-alt"></i></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="text-black font-w500">Client Name</label>
+                        <input type="text" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <button type="button" class="btn btn-primary">CREATE</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row page-titles mx-0">
+    <div class="col-sm-6 p-md-0">
+        <div class="welcome-text">
+            <h4>{{ title }}</h4>
+            <p class="mb-0">{{description}}</p>
+        </div>
+    </div>
+    <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'service:company' %}">Главная</a></li>
+            <li class="breadcrumb-item active"><a>Уведоления</a></li>
+        </ol>
+    </div>
+</div>
+{% for notificat in notificationes %}
+<div class="single-recent-post">
+    <ul class="blog-meta">
+        <li><i class="pe-7s-date"></i> <span>{{ notificat.created_at|date:"d M Y" }}</span></li>
+    </ul>
+    <h6 class="title">
+        <a href="{{notificat.slug|safe}}" style="font-size:12px;">
+            {{ notificat.message|slice:":100" }}{% if notificat.message|length > 100 %}...{% endif %}
+        </a>
+    </h6>
+</div>
+{% endfor %}
+{% endblock content %}

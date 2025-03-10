@@ -1,0 +1,23 @@
+{% load static %}
+{% load range_filter %}
+
+{% for post in recentpost %}
+<div class="col-lg-4">
+    <article>
+        <div class="post-img">
+            <img src="{{ post.image.url }}" alt="Blog Image" class="img-fluid">
+        </div>
+        <p class="post-category">{{ post.category.name }}</p>
+        <h2 class="title">
+            <a href="">{{ post.title }}</a>
+        </h2>
+        <div class="d-flex align-items-center">
+            <div class="post-meta">
+                <p class="post-date">
+                    <time datetime="{{ post.created_at|date:'Y-m-d' }}">{{ post.created_at|date:'M d, Y' }}</time>
+                </p>
+            </div>
+        </div>
+    </article>
+</div>
+{% endfor %}

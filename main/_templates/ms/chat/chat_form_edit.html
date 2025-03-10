@@ -1,0 +1,149 @@
+{% extends 'lk/base_full.html' %}
+{% load static %}
+{% block title %}{{ seo_title }}{% endblock title %}
+{% block description %}{{ seo_description }}{% endblock description %}
+{% block propertytitle %}{% if seo_previev %}{{ seo_previev.url }} {% endif %} {% endblock propertytitle %}
+{% block propertydescription %}{{ seo_propertytitle }}{% endblock propertydescription %}
+{% block propertyimage %}{{ seo_propertydescription }}{% endblock propertyimage %}
+{% block head %}{% endblock head %}
+
+{% block content %}
+<form id="chatForm" method="post" action="{% url 'service:chat_edit' chat.pk %}">
+
+    <div class="row">
+        {% csrf_token %}
+        <div class="col-9">
+            {{ form.name }}
+        </div>
+        <div class="col-3">
+            <button type="submit" id="saveChatDetailsButton" class="btn btn-primary rounded me-3 mb-sm-0 mb-2 text-white">Сохранить</button>
+        </div>
+        <br>
+        <br>
+        <br>
+        <br>
+        <!-- Секция для выбора пользователей -->
+        <div class="col-6">
+            <label>Выберите пользователей</label>
+            {% if not update %}
+            {% for user in form.users.field.queryset %}
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="users" id="user_{{ user.pk }}" value="{{ user.pk }}"
+                       {% if user in form.initial.users.all %}
+                       checked
+                       {% endif %}
+                >
+                <label class="form-check-label" for="user_{{ user.pk }}">
+                    <img src="{{ user.avatar.url }}" alt="{{ user.name }}" class="avatar-img">
+                    {{ user.name }}
+                </label>
+            </div>
+            {% endfor %}
+            {% else %}
+            {% for user in selected_users %}
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="users" id="user_{{ user.pk }}" value="{{ user.pk }}" checked>
+                <label class="form-check-label" for="user_{{ user.pk }}">
+                    <img src="{{ user.avatar.url }}" alt="{{ user.name }}" class="avatar-img">
+                    {{ user.name }}
+                </label>
+            </div>
+            {% endfor %}
+            {% for user in not_selected_users %}
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="users" id="user_{{ user.pk }}" value="{{ user.pk }}">
+                <label class="form-check-label" for="user_{{ user.pk }}">
+                    <img src="{{ user.avatar.url }}" alt="{{ user.name }}" class="avatar-img">
+                    {{ user.name }}
+                </label>
+            </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+
+        <!-- Секция для выбора администраторов -->
+        <div class="col-6">
+            <label>Выберите администраторов</label>
+            {% if not update %}
+            {% for admin in form.administrators.field.queryset %}
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="administrators" id="admin_{{ admin.pk }}" value="{{ admin.pk }}"
+                       {% if admin in form.initial.administrators.all %}
+                       checked
+                       {% endif %}
+                >
+                <label class="form-check-label" for="admin_{{ admin.pk }}">
+                    <img src="{{ admin.avatar.url }}" alt="{{ admin.name }}" class="avatar-img">
+                    {{ admin.name }}
+                </label>
+            </div>
+            {% endfor %}
+            {% else %}
+            {% for admin in selected_administrators %}
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="administrators" id="admin_{{ admin.pk }}" value="{{ admin.pk }}" checked>
+                <label class="form-check-label" for="admin_{{ admin.pk }}">
+                    <img src="{{ admin.avatar.url }}" alt="{{ admin.name }}" class="avatar-img">
+                    {{ admin.name }}
+                </label>
+            </div>
+            {% endfor %}
+            {% for admin in not_selected_administrators %}
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="administrators" id="admin_{{ admin.pk }}" value="{{ admin.pk }}">
+                <label class="form-check-label" for="admin_{{ admin.pk }}">
+                    <img src="{{ admin.avatar.url }}" alt="{{ admin.name }}" class="avatar-img">
+                    {{ admin.name }}
+                </label>
+            </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</form>
+
+<style>
+    .avatar-img {
+        height: 50px;
+    }
+</style>
+<script>
+    // Скрипт в iframe для отправки сообщения обратно на основную страницу
+    document.addEventListener('DOMContentLoaded', function () {
+        var saveButton = document.getElementById('saveChatDetailsButton');
+        if (saveButton) {
+            saveButton.addEventListener('click', function(event) {
+                event.preventDefault();
+
+                var form = document.getElementById('chatForm');
+                var formData = new FormData(form);
+
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                    },
+                    credentials: 'same-origin'
+                }).then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error('Network response was not ok.');
+                }).then(data => {
+                    console.log('Успешно сохранено:', data);
+                    // Отправка сообщения обратно на основную страницу для закрытия модального окна
+                    window.parent.postMessage('closeEditChatModal', '*');
+                }).catch(error => {
+                    console.error('Произошла ошибка:', error);
+                });
+            });
+        } else {
+            console.log('Кнопка сохранения не найдена');
+        }
+    });
+</script>
+
+
+{% endblock content %}
