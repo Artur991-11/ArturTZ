@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.files.images import ImageFile
 from service.models import Service, Tariff
 User = settings.AUTH_USER_MODEL
 from django.db import models
@@ -21,6 +22,7 @@ class BlogCategory(models.Model):
         verbose_name_plural = "Категории блогов"
 
 class Blog(models.Model):
+    author = models.CharField("Автор",max_length=255, null=True, blank=True)
     name = models.CharField("Название", max_length=255, null=True, blank=True)
     description = RichTextField("Описание", null=True, blank=True)
     title = models.CharField("Заголовок", max_length=255, null=True, blank=True)
@@ -91,23 +93,31 @@ class Seo(models.Model):
         (5, 'Тарифы'),
         (6, 'Контакты'),
         (7, 'ЧаВо'),
-        (8, 'Ресгистрации'),
+        (8, 'Регистрации'),
         (9, 'Авторизация'),
         (10, 'Сбросить пароль'),
         (11, 'Контакты'),
         (12, 'Сотрудничество'),
-        (13, 'Контакты'),
+        (13, 'Уведомления'),
+        (14, 'Тикеты'),
+        (15, 'Личный кабинет'),
+        (16, 'Оборудование'),
     ]
     pagetype = models.PositiveSmallIntegerField('Странца', unique=True, choices=PAGE_CHOICE, blank=False, default=1)
     name = models.CharField("Название", max_length=255)
     description = models.TextField("Описание")
     title = models.CharField("Заголовок", max_length=255)
     content = models.TextField("Содержимое")
-    preview = models.FileField("Изображение", upload_to="product/%Y/%m/%d/", blank=True, null=True, default='default/blogs/cover.png', validators=[FileExtensionValidator(allowed_extensions=['png', 'webp', 'jpeg', 'jpg', 'svg'])],)
+    preview = models.FileField("Изображение", upload_to="Seo/product/%Y/%m/%d/", blank=True, null=True, default='default/blogs/cover.png', validators=[FileExtensionValidator(allowed_extensions=['png', 'webp', 'jpeg', 'jpg', 'svg'])],)
     propertytitle = models.CharField("Заголовок свойства", max_length=255)
     propertydescription = models.CharField("Описание свойства", max_length=255)
     slug = models.SlugField("Слаг", unique=True)
     setting = models.ForeignKey('SettingGlobal', on_delete=models.CASCADE, verbose_name="Настройка")
+    breadcrumbstitle = models.CharField("Хлебные крошки заголовок", max_length=255, null=True, blank=True)
+    breadcrumbscontent = models.TextField("Хлебные крошки описание", null=True, blank=True)
+    cover = models.FileField("Обложка крошек", upload_to="Seo/product/%Y/%m/%d/", blank=True, null=True,
+                               default='default/blogs/cover.png', validators=[
+            FileExtensionValidator(allowed_extensions=['png', 'webp', 'jpeg', 'jpg', 'svg'])], )
 
     class Meta:
         verbose_name = "SEO"
@@ -191,7 +201,6 @@ class GalleryItem(models.Model):
         verbose_name_plural = "Элементы галереи"
 
 
-
 class Review(models.Model):
     name = models.CharField("Название", max_length=255)
     avatar = models.FileField("Изображение", upload_to="product/%Y/%m/%d/", blank=True, null=True, default='default/blogs/cover.png', validators=[FileExtensionValidator(allowed_extensions=['png', 'webp', 'jpeg', 'jpg', 'svg'])],)
@@ -270,16 +279,21 @@ class HomePage(models.Model):
 
 
 class About(models.Model):
-    image = models.FileField("Изображение", upload_to="product/%Y/%m/%d/", blank=True, null=True, default='default/blogs/cover.png', validators=[FileExtensionValidator(allowed_extensions=['png', 'webp', 'jpeg', 'jpg', 'svg'])],)
-    services = models.ManyToManyField(Service)
-    description = RichTextField("Описание")
+    cover = models.FileField("Обложка", upload_to="homepage/product/%Y/%m/%d/", blank=True, null=True,
+                             default='default/blogs/cover.png', validators=[
+    FileExtensionValidator(allowed_extensions=['png', 'webp', 'jpeg', 'jpg', 'svg'])], )
     title = models.CharField("Заголовок", max_length=255)
     content = models.TextField("Содержимое")
-    preview = models.FileField("Изображение", upload_to="product/%Y/%m/%d/", blank=True, null=True, default='default/blogs/cover.png', validators=[FileExtensionValidator(allowed_extensions=['png', 'webp', 'jpeg', 'jpg', 'svg'])],)
-    propertytitle = models.CharField("Заголовок свойства", max_length=255)
-    propertydescription = models.CharField("Описание свойства", max_length=255)
+    titleabout = models.CharField("Заголовок для страницы О нас", max_length=255,null=True, blank=True)
+    description = RichTextField("Описание")
+    image = models.ImageField("Изображение", upload_to="homepage/product/%Y/%m/%d/", blank=True, null=True,
+                             default='default/blogs/cover.png', validators=[
+            FileExtensionValidator(allowed_extensions=['png', 'webp', 'jpeg', 'jpg', 'svg'])], )
+    services = models.ManyToManyField(Service)
 
     class Meta:
         verbose_name = "О нас"
         verbose_name_plural = "О нас"
+
+
 

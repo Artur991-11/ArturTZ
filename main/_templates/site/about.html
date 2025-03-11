@@ -6,15 +6,18 @@
 {% block propertydescription %}{{ seo_propertytitle }}{% endblock propertydescription %}
 {% block propertyimage %}{{ seo_propertydescription }}{% endblock propertyimage %}
 {% block head %}
+
 <!-- Additional head content specific to this page -->
 <div class="breadcrumbs">
-    <div class="page-header d-flex align-items-center">
+    <div class="page-header d-flex align-items-center" style="background: url({% if seo_cover %}{{ seo_cover.url }} {% else %} {{ abouts.cover.url }}{% endif %}) center bottom;">
         <div class="container position-relative">
             <div class="row d-flex justify-content-center">
-                <div class="col-lg-6 text-center">
-                    <h2>About Us</h2>
-                    <p>Lorem ipsum dolor sit amet consectetur adipiscing elit</p>
+
+                <div class="section-header">
+                    <h2>{{ seo_breadcrumbstitle }}</h2>
+                    <p>{{ seo_breadcrumbscontent }}</p>
                 </div>
+
             </div>
         </div>
     </div>
@@ -22,11 +25,12 @@
         <div class="container">
             <ol>
                 <li><a href="{% url 'webmain:home' %}">Главная</a></li>
-                <li>О нас</li>
+                <li>{{ seo_breadcrumbstitle }}</li>
             </ol>
         </div>
     </nav>
 </div>
+
 {% endblock head %}
 
 {% block content %}
@@ -38,8 +42,8 @@
         <section>
             <div class="container" id="featured">
                 <div class="section-header" data-aos="fade-up" data-aos-delay="100">
-                    <h2>{{seo_title}}</h2>
-                    <p>{{seo_description}}</p>
+                    <h2>{{abouts.titleabout}}</h2>
+                    <p>{{abouts.description|safe}}</p>
                 </div>
                 <div class="row">
 
@@ -47,11 +51,10 @@
                     <div class="col-md-5 p-4 p-sm-5 center">
                         <div class="list-center-wrap" data-aos="fade-up" data-aos-delay="100">
                             <div class="center-icon">
-                                {% for page in homepages %}
-                                {% if page.choose_us_main_image %}
-                                <img src="{{ page.choose_us_main_image.url }}" alt="icon">
-                                {% endif %}
-                                {% endfor %}
+
+                                    {% if abouts.image %}
+                                        <img src="{{ abouts.image.url }}" alt="icon">
+                                    {% endif %}
                             </div>
                         </div>
                     </div>
@@ -59,7 +62,7 @@
                     <!-- start  right -->
 
                     <div class="col-md-7">
-                        {% for service in services %}
+                        {% for service in abouts.services.all %}
                         <div class="list-wrap" data-aos="fade-up" data-aos-delay="100">
                             <div class="icon">
                                 {% if service.image %}

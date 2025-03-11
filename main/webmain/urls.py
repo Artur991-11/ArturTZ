@@ -6,7 +6,9 @@ app_name = 'webmain'
 urlpatterns = [
     path('', views.HomeView.as_view(), name='home'),
     path('contacts/', views.ContactView.as_view(), name='contact'),
+
     path('about/', views.AboutView.as_view(), name='about'),
+
     path("tariffs/", views.TariffsView.as_view(), name="tariffs"),
     path("faqs/", views.FaqsView.as_view(), name="faqs"),
     path("blogs/", views.BlogView.as_view(), name="blogs"),

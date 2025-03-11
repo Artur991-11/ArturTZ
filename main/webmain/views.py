@@ -1,4 +1,5 @@
 from django.contrib.auth.views import LoginView
+from django.core.files.images import ImageFile
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
@@ -6,7 +7,7 @@ from django.template.loader import render_to_string
 from django.views.generic import DetailView, ListView, CreateView, TemplateView, FormView
 from django.contrib.auth.models import User
 from django.views.generic.base import View
-from django.db.models import Q
+from django.db.models import Q, ImageField
 from django.http import Http404
 from django.contrib.sites.models import Site
 from webmain.models import HomePage, Faq, Review, GalleryItem, Gallery, SMTPPage, SettingGlobal, Seo, Pages,SocialLink,Contact,Blog,BlogCategory,About
@@ -107,6 +108,7 @@ class ContactView(FormView):
         form.save()
         return super().form_valid(form)
 
+
 class AboutView(TemplateView):
     template_name = 'site/about.html'
     model = About
@@ -114,22 +116,24 @@ class AboutView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        aboutus = About.objects.first()
-        context['homepages'] = HomePage.objects.all()
-        context['services'] = Service.objects.all()
-        if aboutus:
-            context['pageinformation'] = aboutus.description
-            context['seo_previev'] = aboutus.preview
-            context['seo_title'] = aboutus.title
-            context['seo_description'] = aboutus.content
-            context['seo_propertytitle'] = aboutus.propertytitle
-            context['seo_propertydescription'] = aboutus.propertydescription
-        else:
-            context['seo_previev'] = None
+        context['abouts'] = About.objects.first()
+        try:
+            seo_data = Seo.objects.get(pagetype=4)
+            context['seo_preview'] = seo_data.preview
+            context['seo_title'] = seo_data.title
+            context['seo_description'] = seo_data.description
+            context['seo_propertytitle'] = seo_data.propertytitle
+            context['seo_propertydescription'] = seo_data.propertydescription
+            context['seo_breadcrumbstitle'] = seo_data.breadcrumbstitle
+            context['seo_breadcrumbscontent'] = seo_data.breadcrumbscontent
+            context['seo_cover'] = seo_data.cover
+        except Seo.DoesNotExist:
+            context['seo_preview'] = None
             context['seo_title'] = None
             context['seo_description'] = None
             context['seo_propertytitle'] = None
             context['seo_propertydescription'] = None
+
         return context
 
 
@@ -215,7 +219,6 @@ class BlogView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)  # Вызов `super()` сохраняет функциональность `ListView`
-
         try:
             seo_data = Seo.objects.get(pagetype=2)  # Фильтруем по домену
             context['seo_previev'] = seo_data.previev

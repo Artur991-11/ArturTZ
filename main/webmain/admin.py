@@ -5,10 +5,17 @@ from modeltranslation.admin import TranslationAdmin, TabbedTranslationAdmin
 from .models import *
 from django import forms
 
+from django.contrib import admin
+
+
+@admin.register(Seo)
+class SeoAdmin(admin.ModelAdmin):
+    list_display = ("title",)
 
 @admin.register(HomePage)
 class HomePageAdmin(admin.ModelAdmin):
     list_display = ('first_banner_title',)
+    choose_us_main_image = ('ArthurTZ.main._media.home.features_MrBxRxO.jpg')
 
 
 @admin.register(Review)

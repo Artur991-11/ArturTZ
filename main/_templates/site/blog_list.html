@@ -43,7 +43,7 @@
               <div class="post-img">
                 <img src="{{ blog.image.url }}" alt="" class="img-fluid">
               </div>
-              <p class="post-category">{{ blog.category.name }}</p>
+              <p class="post-category">{{ blog.name }}</p>
               <h2 class="title">
                 <a href="{% url 'webmain:blog' blog.slug %}">{{ blog.title }}</a>
               </h2>
